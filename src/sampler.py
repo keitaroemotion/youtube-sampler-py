@@ -16,6 +16,7 @@ def help():
     print("")
 
 def syscall(command):
+    print("\n[%s]\n" % command)
     subprocess.call(command, shell=True)
 
 def mp4_to_wav(video_name):
@@ -24,7 +25,7 @@ def mp4_to_wav(video_name):
 
 def sample(wavfile, start, duration=5):
     wavroot = wavfile.replace(".wav", "")
-    syscall("ffmpeg -ss %d -t %d -i %s %s-%d%d.wav" % (start, duration, wavroot, start, duration))
+    syscall("ffmpeg -ss %s -t %s -i %s %s-%s%s.wav" % (start, duration, wavfile, wavroot, start, duration))
 
 def download():
     urls = [x for x in sys.argv if x.startswith("https://www.youtube.com/watch")]
