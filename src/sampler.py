@@ -12,7 +12,8 @@ wavs    = [x for x in sys.argv if x.endswith(".wav")]
 
 def help():
     print("")
-    print("sampler --wav ... convert file to youtube")
+    print("sampler --wav                                 ... convert file to youtube")
+    print("sampler --sample [start] [duration] [wavfile] ... sample wav file")
     print("")
 
 def syscall(command):
@@ -23,9 +24,9 @@ def mp4_to_wav(video_name):
     wav_ext = video_name.replace(".mp4", "")
     syscall("ffmpeg -i %s -ab 160k -ac 2 -ar 44100 -vn %s.wav" % (video_name, wav_ext))
 
-def sample(wavfile, start, duration=5):
+def sample(wavfile, start, duration):
     wavroot = wavfile.replace(".wav", "")
-    syscall("ffmpeg -ss %s -t %s -i %s %s-%s%s.wav" % (start, duration, wavfile, wavroot, start, duration))
+    syscall("ffmpeg -ss %s -t %s -i %s %s-%s-%s.wav" % (start, duration, wavfile, wavroot, start, duration))
 
 def download():
     urls = [x for x in sys.argv if x.startswith("https://www.youtube.com/watch")]
@@ -56,14 +57,19 @@ elif("--wav" in options):
             if '.mp4' in file:
                 mp4_to_wav(os.path.join(r, file))
 
-elif("--sample"):
+elif("--sample" in options):
     if len(nums) == 0:
         print("\nYou need to input start time(0~...)\n")
+        sys.exit()
  
     start = nums[0]
-    duration = nums[1] if nums[1] else 5
+    duration = nums[1] if len(nums) > 1 else 5
+    print("duration: %s" % duration)
+
     if len(wavs) == 0:
         print("\nYou need to input wav file\n")
+        sys.exit()
+
     sample(wavs[0], start, duration)
 else:
     help()
