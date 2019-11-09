@@ -12,6 +12,7 @@ wavs    = [x for x in sys.argv if x.endswith(".wav")]
 
 def help():
     print("")
+    print("sampler --play [mp3|wav]                      ... play music file")
     print("sampler --wav                                 ... convert file to youtube")
     print("sampler --sample [start] [duration] [wavfile] ... sample wav file")
     print("")
@@ -30,6 +31,10 @@ def sample(wavfile, start, duration):
 
 def download():
     urls = [x for x in sys.argv if x.startswith("https://www.youtube.com/watch")]
+    if len(urls) == 0:
+        print("\nYou need to specify the video url!\n")
+        sys.exit()
+
     for url in urls:
         print("now downloading %s...." % url)
         YouTube(url)     \
@@ -49,6 +54,15 @@ def pwd():
 
 if ("-h" in options) or ("help" in sys.argv):
     help()
+
+elif("--play" in options):
+    songs = [x for x in sys.argv if re.search(".*\.(wav|mp3)$", x)]
+    if (len(songs) == 0):
+        songs = [x for x in os.listdir(".") if re.search(".*\.(wav|mp3)$", x)]
+
+    for song in songs: 
+        syscall("afplay {}".format(song))
+
 elif("--wav" in options):
     download        ()
     update_filenames()
@@ -71,5 +85,6 @@ elif("--sample" in options):
         sys.exit()
 
     sample(wavs[0], start, duration)
+
 else:
     help()
