@@ -13,7 +13,7 @@ wavs    = [x for x in sys.argv if x.endswith(".wav")]
 def help():
     print("")
     print("sampler --play [mp3|wav]                      ... play music file")
-    print("sampler --wav                                 ... convert file to youtube")
+    print("sampler --wav [url1] [url2]                   ... convert file to youtube")
     print("sampler --sample [start] [duration] [wavfile] ... sample wav file")
     print("")
 

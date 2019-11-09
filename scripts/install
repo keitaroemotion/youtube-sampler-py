@@ -1,1 +1,2 @@
 pip install pytube
+cp src/sampler.py /usr/local/bin/sampler
