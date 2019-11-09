@@ -10,25 +10,6 @@ options = [x for x in sys.argv if x.startswith("-") ]
 nums    = [x for x in sys.argv if re.search("^\d+$", x)]
 wavs    = [x for x in sys.argv if x.endswith(".wav")]
 
-def help():
-    print("")
-    print("sampler --play [mp3|wav]                      ... play music file")
-    print("sampler --wav [url1] [url2]                   ... convert file to youtube")
-    print("sampler --sample [start] [duration] [wavfile] ... sample wav file")
-    print("")
-
-def syscall(command):
-    print("\n[%s]\n" % command)
-    subprocess.call(command, shell=True)
-
-def mp4_to_wav(video_name):
-    wav_ext = video_name.replace(".mp4", "")
-    syscall("ffmpeg -i %s -ab 160k -ac 2 -ar 44100 -vn %s.wav" % (video_name, wav_ext))
-
-def sample(wavfile, start, duration):
-    wavroot = wavfile.replace(".wav", "")
-    syscall("ffmpeg -ss %s -t %s -i %s %s-%s-%s.wav" % (start, duration, wavfile, wavroot, start, duration))
-
 def download():
     urls = [x for x in sys.argv if x.startswith("https://www.youtube.com/watch")]
     if len(urls) == 0:
@@ -42,15 +23,34 @@ def download():
             .first()     \
             .download()
 
+def help():
+    print("")
+    print("sampler --play [mp3|wav]                      ... play music file")
+    print("sampler --wav [url1] [url2]                   ... convert file to youtube")
+    print("sampler --sample [start] [duration] [wavfile] ... sample wav file")
+    print("")
+
+def mp4_to_wav(video_name):
+    wav_ext = video_name.replace(".mp4", "")
+    syscall("ffmpeg -i %s -ab 160k -ac 2 -ar 44100 -vn %s.wav" % (video_name, wav_ext))
+
+def pwd():
+    os.chdir(os.path.dirname(__file__))
+    return os.getcwd()
+
+def sample(wavfile, start, duration):
+    wavroot = wavfile.replace(".wav", "")
+    syscall("ffmpeg -ss %s -t %s -i %s %s-%s-%s.wav" % (start, duration, wavfile, wavroot, start, duration))
+
+def syscall(command):
+    print("\n[%s]\n" % command)
+    subprocess.call(command, shell=True)
+
 def update_filenames():
     for r, d, f in os.walk("."):
         for file in f:
             if '.mp4' in file:
                 os.rename(file, file.replace(" ", "").replace("(", "").replace(")", ""))
-
-def pwd():
-    os.chdir(os.path.dirname(__file__))
-    return os.getcwd()
 
 if ("-h" in options) or ("help" in sys.argv):
     help()
