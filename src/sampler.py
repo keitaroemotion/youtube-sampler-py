@@ -46,7 +46,7 @@ def update_filenames():
     for r, d, f in os.walk("."):
         for file in f:
             if '.mp4' in file:
-                os.rename(file, file.replace(" ", ""))
+                os.rename(file, file.replace(" ", "").replace("(", "").replace(")", ""))
 
 def pwd():
     os.chdir(os.path.dirname(__file__))
